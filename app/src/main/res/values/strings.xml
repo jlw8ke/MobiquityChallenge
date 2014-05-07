@@ -4,5 +4,13 @@
     <string name="app_name">MobiquityChallenge</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string-array name="nav_drawer_items">
+        <item>My Pics</item>
+        <item>Favorites</item>
+        <item>On Device</item>
+        <item>Map</item>
+        <item>Settings</item>
+    </string-array>
+
 
 </resources>
