@@ -2,6 +2,7 @@ package com.jlwapps.mobiquitychallenge.app;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -65,9 +66,16 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_main);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(savedInstanceState == null)
+        {
+            //Lower ActionBar
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            BottomActionBarFragment lowerActionBar = new BottomActionBarFragment();
+            ft.add(R.id.lower_action_bar_frame, lowerActionBar);
+            ft.commit();
+        }
 
         //Creating AuthSession for Dropbox API
         AndroidAuthSession session = buildDropBoxSession();
@@ -194,10 +202,7 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
             {
                 Log.i("DBAuthLog", "Error authenticating");
             }
-
         }
-
-
     }
 
     @Override
