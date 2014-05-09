@@ -18,4 +18,6 @@
         <item>@drawable/ic_action_action_settings</item>
     </string-array>
 
+    <string name="dropbox_login">Login to DropBox</string>
+
 </resources>

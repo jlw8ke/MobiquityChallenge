@@ -2,6 +2,9 @@
 <resources>
     <color name="list_divider">#272727</color>
     <color name="list_background">#303030</color>
-    <color name="list_background_pressed">#9E2518</color>
+    <color name="mobiquity_red">#9E2518</color>
     <color name="drawer_item_title">#fff</color>
+
+    <color name="grey_light">#80a1a1a1</color>
+    <color name="grey_bright">#33cccccc</color>
 </resources>
