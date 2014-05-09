@@ -3,6 +3,7 @@ package com.jlwapps.mobiquitychallenge.app;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends Activity implements NavDrawerClickInterface,
-        MyPicsFragmentLogin.MyPicsFragmentInterface{
+        MyPicsLoginFragment.MyPicsFragmentInterface{
 
     // region Dropbox Specific Attributes
     private static final String APP_KEY = "9xwd05d2k716h5b";
@@ -223,7 +224,7 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
         switch (index) {
             case 0:
                 if(!mDBApi.getSession().isLinked())
-                    theFragment = new MyPicsFragmentLogin();
+                    theFragment = new MyPicsLoginFragment();
                 else
                     theFragment = new MyPicsFragment();
                 break;
@@ -242,6 +243,11 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
             mDrawerLayout.closeDrawer(mDrawerList);
             mNavDrawerPosition = index;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // region Dropbox Methods

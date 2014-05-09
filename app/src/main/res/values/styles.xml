@@ -5,4 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="AlertDialogButton">
+        <item name="android:background">@drawable/btn_action_selector</item>
+    </style>
+
 </resources>

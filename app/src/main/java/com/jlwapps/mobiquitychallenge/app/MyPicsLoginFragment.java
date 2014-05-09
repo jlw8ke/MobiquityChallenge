@@ -15,7 +15,7 @@ import com.dropbox.client2.android.AndroidAuthSession;
 /**
  * Created by jlw8k_000 on 5/8/2014.
  */
-public class MyPicsFragmentLogin extends Fragment {
+public class MyPicsLoginFragment extends Fragment {
 
     public interface MyPicsFragmentInterface
     {
