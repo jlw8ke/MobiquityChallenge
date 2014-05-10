@@ -27,6 +27,12 @@
     <string name="dialog_location">Location:</string>
     <string name="local_save_success">Picture was successfully saved to phone</string>
     <string name="dropbox_save_success">Picture was uploaded to Dropbox</string>
-    <string name="save_fail">Failed to save picture</string>
+
+    <string name="no_items">No Items</string>
+    
+    <!-- Error Messages -->
+    <string name="save_fail">Failed to save image to a local file</string>
+    <string name="save_fail_dropbox">Dropbox upload failed</string>
+
 
 </resources>

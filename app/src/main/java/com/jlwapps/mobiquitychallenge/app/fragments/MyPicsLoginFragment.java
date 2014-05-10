@@ -31,7 +31,7 @@ public class MyPicsLoginFragment extends Fragment {
         try {
             mInterface = (DropBoxInterface) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "must implement DropboxFileInterface");
+            throw new ClassCastException(activity.toString() + "must implement DropboxInterface");
         }
     }
 

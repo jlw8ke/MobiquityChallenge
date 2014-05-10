@@ -26,6 +26,7 @@ import com.dropbox.client2.session.Session.AccessType;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerAdapter;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerClickInterface;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerItem;
+import com.jlwapps.mobiquitychallenge.app.asynctasks.DropboxLoadAllTask;
 import com.jlwapps.mobiquitychallenge.app.fragments.BottomActionBarFragment;
 import com.jlwapps.mobiquitychallenge.app.fragments.FavoritesFragment;
 import com.jlwapps.mobiquitychallenge.app.fragments.MyPicsFragment;
@@ -65,6 +66,8 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
     private String[] navDrawerTitles;
     private TypedArray navDrawerIcons;
     private ArrayList<NavDrawerItem> navDrawerItems;
+
+    private DropboxAPI.Entry mDropboxEntries;
 
 
     @Override
@@ -206,6 +209,13 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
                 Log.i("DBAuthLog", "Error authenticating");
             }
         }
+
+        //Load Dropbox Items
+        if(session.isLinked())
+        {
+            DropboxLoadAllTask loadAllTask = new DropboxLoadAllTask(getApplicationContext(), this, "/");
+            loadAllTask.execute();
+        }
     }
 
     @Override
@@ -247,6 +257,18 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
         }
     }
 
+    private void syncFragments()
+    {
+        Fragment mainFragment = getFragmentManager().findFragmentById(R.id.main_frame);
+        if(mainFragment != null) {
+            try {
+                ((DropBoxFragmentInterface)mainFragment).dropboxSyncFragment(mDropboxEntries);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -282,6 +304,18 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
     @Override
     public DropboxAPI<AndroidAuthSession> getDropboxAPI() {
         return mDBApi;
+    }
+
+    @Override
+    public void dropboxSync(DropboxAPI.Entry entries)
+    {
+        mDropboxEntries = entries;
+        syncFragments();
+    }
+
+    @Override
+    public DropboxAPI.Entry getEntries() {
+        return mDropboxEntries;
     }
 
     // endregion

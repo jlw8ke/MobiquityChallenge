@@ -5,19 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main Content -->
-    <FrameLayout
-        android:id="@+id/main_frame"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey_bright">
+        android:layout_height="match_parent">
+    <!-- Main Content -->
+
 
         <FrameLayout
             android:id="@+id/lower_action_bar_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom" />
-    </FrameLayout>
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_alignParentBottom="true"/>
+
+        <FrameLayout
+            android:id="@+id/main_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_bright"
+            android:layout_above="@id/lower_action_bar_frame"/>
+    </RelativeLayout>
 
     <!-- Navigation Drawer -->
     <ListView
@@ -31,7 +38,6 @@
         android:background="@color/list_background"
         android:listSelector="@drawable/drawer_selector"/>
 
-    <!-- Bottom ActionBar -->
 
 
 </android.support.v4.widget.DrawerLayout>

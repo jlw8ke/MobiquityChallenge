@@ -8,4 +8,6 @@ import com.dropbox.client2.android.AndroidAuthSession;
  */
 public interface DropBoxInterface {
     public DropboxAPI<AndroidAuthSession> getDropboxAPI();
+    public void dropboxSync(DropboxAPI.Entry entries);
+    public DropboxAPI.Entry getEntries();
 }

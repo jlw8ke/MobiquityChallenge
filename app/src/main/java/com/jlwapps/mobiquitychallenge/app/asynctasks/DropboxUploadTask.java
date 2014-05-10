@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,14 +22,14 @@ public class DropboxUploadTask extends AsyncTask<Void, Long, Void> {
     private DropboxAPI<AndroidAuthSession> dbAPI;
     private Map<Uri, String> filesToUpload;
     private Context mContext;
-    private DropboxUploadTaskInterface dbuti;
+    private DropBoxInterface dbi;
     private DropboxAPI.UploadRequest mRequest;
 
 
-    public DropboxUploadTask(Context context, DropboxUploadTaskInterface dbuti, Map<Uri, String> filesToUpload, DropboxAPI<AndroidAuthSession> dbAPI)
+    public DropboxUploadTask(Context context, DropBoxInterface dbi, Map<Uri, String> filesToUpload, DropboxAPI<AndroidAuthSession> dbAPI)
     {
         mContext = context.getApplicationContext();
-        this.dbuti = dbuti;
+        this.dbi = dbi;
         this.filesToUpload = filesToUpload;
         this.dbAPI = dbAPI;
     }
@@ -58,8 +59,4 @@ public class DropboxUploadTask extends AsyncTask<Void, Long, Void> {
         super.onPostExecute(aVoid);
     }
 
-    public interface DropboxUploadTaskInterface
-    {
-        //public void onDropboxUploadComplete();
-    }
 }
