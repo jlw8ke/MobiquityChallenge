@@ -1,8 +1,7 @@
-package com.jlwapps.mobiquitychallenge.app;
+package com.jlwapps.mobiquitychallenge.app.fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.jlwapps.mobiquitychallenge.app.MainActivity;
+import com.jlwapps.mobiquitychallenge.app.PictureUtils;
+import com.jlwapps.mobiquitychallenge.app.R;
+import com.jlwapps.mobiquitychallenge.app.dialogs.PictureDialogFragment;
+
 import java.io.File;
-import java.util.UUID;
 
 /**
  * Created by jlw8k_000 on 5/9/2014.

@@ -7,6 +7,18 @@
     android:layout_gravity="center"
     android:padding="5dp">
 
+    <EditText
+        android:id="@+id/picture_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isScrollContainer="false"
+        android:minLines="2"
+        android:maxLines="4"
+        android:inputType="textMultiLine|textCapWords"
+        android:textSize="22dp"
+        android:gravity="center"
+        android:textColor="@color/mobiquity_red"/>
+
     <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="wrap_content"

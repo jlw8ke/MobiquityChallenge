@@ -1,4 +1,4 @@
-package com.jlwapps.mobiquitychallenge.app;
+package com.jlwapps.mobiquitychallenge.app.fragments;
 
 import android.app.Fragment;
 

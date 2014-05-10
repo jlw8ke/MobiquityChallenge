@@ -1,4 +1,4 @@
-package com.jlwapps.mobiquitychallenge.app;
+package com.jlwapps.mobiquitychallenge.app.models;
 
 import android.graphics.Bitmap;
 

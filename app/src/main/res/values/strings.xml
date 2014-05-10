@@ -18,12 +18,15 @@
         <item>@drawable/ic_action_action_settings</item>
     </string-array>
 
-    <string name="dropbox_login">Login to DropBox</string>
-    <string name="dropbox_save">Save to DropBox</string>
+    <string name="dropbox_login">Login to Dropbox</string>
+    <string name="dropbox_save">Save to Dropbox</string>
     <string name="local_save">Save to Local Storage</string>
     <string name="cancel">Cancel</string>
 
     <string name="dialog_creation_date">Creation Date:</string>
     <string name="dialog_location">Location:</string>
+    <string name="local_save_success">Picture was successfully saved to phone</string>
+    <string name="dropbox_save_success">Picture was uploaded to Dropbox</string>
+    <string name="save_fail">Failed to save picture</string>
 
 </resources>

@@ -26,13 +26,17 @@ import com.dropbox.client2.session.Session.AccessType;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerAdapter;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerClickInterface;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerItem;
+import com.jlwapps.mobiquitychallenge.app.fragments.BottomActionBarFragment;
+import com.jlwapps.mobiquitychallenge.app.fragments.FavoritesFragment;
+import com.jlwapps.mobiquitychallenge.app.fragments.MyPicsFragment;
+import com.jlwapps.mobiquitychallenge.app.fragments.MyPicsLoginFragment;
 
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends Activity implements NavDrawerClickInterface,
-        MyPicsLoginFragment.MyPicsFragmentInterface{
+        DropBoxInterface {
 
     // region Dropbox Specific Attributes
     private static final String APP_KEY = "9xwd05d2k716h5b";

@@ -1,4 +1,4 @@
-package com.jlwapps.mobiquitychallenge.app;
+package com.jlwapps.mobiquitychallenge.app.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,28 +11,25 @@ import android.widget.TextView;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
+import com.jlwapps.mobiquitychallenge.app.R;
 
 /**
  * Created by jlw8k_000 on 5/8/2014.
  */
 public class MyPicsLoginFragment extends Fragment {
 
-    public interface MyPicsFragmentInterface
-    {
-        public DropboxAPI<AndroidAuthSession> getDropboxAPI();
-
-    }
 
     private ImageButton mDropBoxButton;
     private TextView mDropBoxLabel;
-    private MyPicsFragmentInterface mInterface;
+    private DropBoxInterface mInterface;
 
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mInterface = (MyPicsFragmentInterface) activity;
+            mInterface = (DropBoxInterface) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + "must implement DropboxFileInterface");
         }

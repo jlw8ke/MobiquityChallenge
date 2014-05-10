@@ -1,4 +1,4 @@
-package com.jlwapps.mobiquitychallenge.app;
+package com.jlwapps.mobiquitychallenge.app.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,14 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jlwapps.mobiquitychallenge.app.R;
+
 /**
- * Created by jlw8k_000 on 5/9/2014.
+ * Created by jlw8k_000 on 5/8/2014.
  */
-public class MyPicsFragment extends Fragment {
+public class FavoritesFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_mypics, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_favorites, container, false);
         return rootView;
     }
 }
