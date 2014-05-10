@@ -3,9 +3,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+    <GridView
+        android:id="@+id/grid_pictures"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="My Pics!"/>
+        android:columnWidth="90dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center">
+
+        </GridView>
 
 </LinearLayout>

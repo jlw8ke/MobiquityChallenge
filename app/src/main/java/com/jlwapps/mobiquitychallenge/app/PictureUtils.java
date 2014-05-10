@@ -26,31 +26,7 @@ public class PictureUtils {
 
     public interface SavePicturesInterface
     {
-        public void onDropBoxSaveComplete(boolean success);
         public void onLocalSaveComplete(boolean success);
-    }
-
-    public static void savePictureToDropbox(SavePicturesInterface spi, Uri loc, String title, DropBoxInterface dbi)
-    {
-        DropboxAPI<AndroidAuthSession> dbAPI = dbi.getDropboxAPI();
-
-        if(dbAPI == null || !dbAPI.getSession().isLinked())
-            spi.onDropBoxSaveComplete(false);
-
-        try {
-            File file = new File(loc.getPath());
-            FileInputStream in = new FileInputStream(file);
-
-            DropboxAPI.Entry response = dbAPI.putFile("/" + title, in,
-                    file.length(), null, null);
-            Log.i("SaveToDropBox", "The uploaded file's rev is: " + response.rev);
-        } catch (DropboxUnlinkedException e) {
-            Log.e("SaveToDropBox", "User has unlinked.");
-        } catch (DropboxException e) {
-            Log.e("SaveToDropBox", "Something went wrong while uploading.");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void savePictureToLocal(Context context, SavePicturesInterface spi, Uri loc, String title)

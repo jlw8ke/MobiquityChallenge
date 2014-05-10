@@ -18,15 +18,18 @@ import android.widget.Toast;
 import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
 import com.jlwapps.mobiquitychallenge.app.PictureUtils;
 import com.jlwapps.mobiquitychallenge.app.R;
+import com.jlwapps.mobiquitychallenge.app.asynctasks.DropboxUploadTask;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * Created by jlw8k_000 on 5/9/2014.
  */
-public class PictureDialogFragment extends DialogFragment implements PictureUtils.SavePicturesInterface {
+public class PictureDialogFragment extends DialogFragment implements PictureUtils.SavePicturesInterface{
 
     public static String TAG = "PictureDialogFragment";
 
@@ -91,12 +94,11 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         mDropBoxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PictureUtils.savePictureToDropbox(
-                        mInterface,
-                        mPictureLocation,
-                        mTitleView.getText().toString(),
-                        (DropBoxInterface)getActivity()
-                        );
+                Map<Uri, String> filesToUpload = new HashMap<Uri, String>();
+                filesToUpload.put(mPictureLocation, mTitleView.getText().toString() + ".png");
+                DropboxUploadTask uploadTask = new DropboxUploadTask(getActivity(), null, filesToUpload, ((DropBoxInterface)getActivity()).getDropboxAPI());
+                uploadTask.execute();
+                dismiss();
             }
         });
 
@@ -121,16 +123,6 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         return rootView;
     }
 
-    @Override
-    public void onDropBoxSaveComplete(boolean success) {
-        if(success) {
-            Toast.makeText(getActivity(), getResources().getString(R.string.dropbox_save_success), Toast.LENGTH_SHORT).show();
-            dismiss();
-        } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.save_fail), Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     @Override
     public void onLocalSaveComplete(boolean success) {

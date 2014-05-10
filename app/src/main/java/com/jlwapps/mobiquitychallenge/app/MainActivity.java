@@ -142,8 +142,6 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
         mDrawerList.performItemClick(mDrawerAdapter.getView(mNavDrawerPosition, null, null),
                 mNavDrawerPosition,
                 mDrawerList.getItemIdAtPosition(mNavDrawerPosition));
-
-
     }
 
     @Override

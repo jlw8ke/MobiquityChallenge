@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
+import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
 import com.jlwapps.mobiquitychallenge.app.R;
 
 /**
@@ -13,9 +15,13 @@ import com.jlwapps.mobiquitychallenge.app.R;
  */
 public class MyPicsFragment extends Fragment {
 
+    private DropBoxInterface mDBI;
+    private GridView mPictureGrid;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_mypics, container, false);
+        mPictureGrid = (GridView) rootView.findViewById(R.id.grid_pictures);
         return rootView;
     }
 }
