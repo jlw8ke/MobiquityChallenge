@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.dropbox.sync.android.DbxAccountManager;
 import com.jlwapps.mobiquitychallenge.app.DropBoxConstants;
-import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
 import com.jlwapps.mobiquitychallenge.app.R;
 
 /**

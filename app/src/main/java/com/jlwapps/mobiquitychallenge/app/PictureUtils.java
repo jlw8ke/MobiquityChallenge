@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.dropbox.sync.android.DbxAccountManager;
@@ -48,21 +49,21 @@ public class PictureUtils {
             in.close();
             out.close();
             dropboxFile.close();
+            Toast.makeText(context, context.getString(R.string.dropbox_save_success), Toast.LENGTH_SHORT).show();
+
         } catch (Exception e)
         {
             e.printStackTrace();
+            Toast.makeText(context, context.getString(R.string.save_fail_dropbox), Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    public static void savePictureToLocal(Context context, SavePicturesInterface spi, Uri loc, String title)
+    public static void savePictureToLocal(Context context, File input, String title)
     {
-        Log.i("p", context.getFilesDir().toString());
         boolean success = false;
         try {
-            InputStream in = context.getContentResolver().openInputStream(loc);
+            FileInputStream in = new FileInputStream(input);
             FileOutputStream out = context.openFileOutput(title, Context.MODE_PRIVATE);
-            // Copy the bits from instream to outstream
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -70,12 +71,12 @@ public class PictureUtils {
             }
             in.close();
             out.close();
-            success = true;
+            Toast.makeText(context, context.getString(R.string.local_save_success), Toast.LENGTH_SHORT).show();
         } catch (Exception e)
         {
             e.printStackTrace();
+            Toast.makeText(context, context.getString(R.string.save_fail), Toast.LENGTH_SHORT).show();
         }
-        spi.onLocalSaveComplete(success);
     }
 
     public static File createTemporaryFile(String part, String ext) throws Exception

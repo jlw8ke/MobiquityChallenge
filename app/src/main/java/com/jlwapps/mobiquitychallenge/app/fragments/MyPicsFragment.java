@@ -1,7 +1,6 @@
 package com.jlwapps.mobiquitychallenge.app.fragments;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dropbox.sync.android.DbxAccountManager;
-import com.dropbox.sync.android.DbxException;
-import com.dropbox.sync.android.DbxFile;
 import com.dropbox.sync.android.DbxFileInfo;
 import com.dropbox.sync.android.DbxFileSystem;
 import com.dropbox.sync.android.DbxPath;
 import com.jlwapps.mobiquitychallenge.app.DropBoxConstants;
-import com.jlwapps.mobiquitychallenge.app.ImageAdapter;
+import com.jlwapps.mobiquitychallenge.app.DropboxImageAdapter;
 import com.jlwapps.mobiquitychallenge.app.R;
+import com.jlwapps.mobiquitychallenge.app.asynctasks.DropboxLoadAllTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,7 @@ import java.util.List;
 /**
  * Created by jlw8k_000 on 5/9/2014.
  */
-public class MyPicsFragment extends Fragment {
+public class MyPicsFragment extends Fragment implements DropboxLoadAllTask.DropboxLoadAllInterface{
 
     private GridView mPictureGrid;
     private ImageView mNoPicturesImage;
@@ -36,6 +34,7 @@ public class MyPicsFragment extends Fragment {
     private DbxAccountManager manager;
 
     private DbxFileSystem mFileSystem;
+    private DropboxLoadAllTask.DropboxLoadAllInterface dlai;
 
 
 
@@ -45,6 +44,7 @@ public class MyPicsFragment extends Fragment {
         mPictureGrid = (GridView) rootView.findViewById(R.id.grid_pictures);
         mNoPicturesImage = (ImageView) rootView.findViewById(R.id.img_no_pictures);
         mNoPicturesText = (TextView) rootView.findViewById(R.id.lbl_no_pictures);
+        dlai = this;
 
         manager = DbxAccountManager.getInstance(getActivity().getApplicationContext(),
                 DropBoxConstants.APP_KEY, DropBoxConstants.APP_SECRET);
@@ -58,9 +58,8 @@ public class MyPicsFragment extends Fragment {
         super.onResume();
         try {
             mFileSystem = DbxFileSystem.forAccount(manager.getLinkedAccount());
-            List<DbxFileInfo> infos = mFileSystem.listFolder(DbxPath.ROOT);
-            loadPictures(infos);
-            Log.i("PyPicsFragment", infos.toString());
+            new DropboxLoadAllTask(getActivity().getApplicationContext(), mFileSystem, this).execute();
+
             mFileSystem.addPathListener(new DbxFileSystem.PathListener() {
                 @Override
                 public void onPathChange(DbxFileSystem dbxFileSystem, DbxPath dbxPath, Mode mode) {
@@ -97,13 +96,14 @@ public class MyPicsFragment extends Fragment {
 
     private void loadPictures(List<DbxFileInfo> pictures)
     {
-        mPictureGrid.setAdapter(new ImageAdapter(getActivity(), (ArrayList<DbxFileInfo>) pictures));
+        mPictureGrid.setAdapter(new DropboxImageAdapter(getActivity(), (ArrayList<DbxFileInfo>) pictures));
         setGridVisibility(mPictureGrid.getAdapter().isEmpty());
         mPictureGrid.invalidateViews();
     }
 
 
-
-
-
+    @Override
+    public void onFinishDropboxLoad(List<DbxFileInfo> images) {
+        loadPictures(images);
+    }
 }

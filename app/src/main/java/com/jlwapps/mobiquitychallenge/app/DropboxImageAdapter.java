@@ -22,14 +22,14 @@ import java.util.ArrayList;
 /**
  * Created by jlw8k_000 on 5/9/2014.
  */
-public class ImageAdapter extends BaseAdapter {
+public class DropboxImageAdapter extends BaseAdapter {
 
     private ArrayList<DbxFileInfo> pictures;
     private Context mContext;
     private final LayoutInflater mInflater;
 
 
-    public ImageAdapter(Context context, ArrayList<DbxFileInfo> pictures) {
+    public DropboxImageAdapter(Context context, ArrayList<DbxFileInfo> pictures) {
         mContext = context;
         this.pictures = pictures;
         mInflater = LayoutInflater.from(context);

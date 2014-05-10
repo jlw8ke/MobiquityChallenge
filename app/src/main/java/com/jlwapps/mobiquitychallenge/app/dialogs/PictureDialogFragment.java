@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
 import com.jlwapps.mobiquitychallenge.app.PictureUtils;
 import com.jlwapps.mobiquitychallenge.app.R;
 
@@ -29,7 +28,7 @@ import java.util.UUID;
 /**
  * Created by jlw8k_000 on 5/9/2014.
  */
-public class PictureDialogFragment extends DialogFragment implements PictureUtils.SavePicturesInterface{
+public class PictureDialogFragment extends DialogFragment{
 
     public static String TAG = "PictureDialogFragment";
 
@@ -58,7 +57,6 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         super.onCreate(savedInstanceState);
 
         mPictureLocation = getArguments().getParcelable("picture");
-        mInterface = this;
     }
 
     @Override
@@ -70,7 +68,6 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         mThumbnailView = (ImageView) rootView.findViewById(R.id.thumbnail);
         mDropBoxButton = (Button) rootView.findViewById(R.id.btn_dropbox_save);
         mLocalButton = (Button) rootView.findViewById(R.id.btn_local_save);
-        mLocalButton.setVisibility(View.GONE);
         mCancelButton = (Button) rootView.findViewById(R.id.btn_cancel);
         mCreationDate = (TextView) rootView.findViewById(R.id.creationDate);
 
@@ -104,11 +101,12 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         mLocalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    PictureUtils.savePictureToLocal(
-                            getActivity(),
-                            mInterface ,
-                            mPictureLocation,
-                            mTitleView.getText().toString());
+                String title = mTitleView.getText().toString() + ".png";
+                PictureUtils.savePictureToLocal(
+                        getActivity().getApplicationContext(),
+                        new File(mPictureLocation.getPath()),
+                        title);
+                dismiss();
 
             }
         });
@@ -122,15 +120,4 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         return rootView;
     }
 
-
-    @Override
-    public void onLocalSaveComplete(boolean success) {
-        if(success)
-        {
-            Toast.makeText(getActivity(), getResources().getString(R.string.local_save_success), Toast.LENGTH_SHORT).show();
-            dismiss();
-        } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.save_fail), Toast.LENGTH_SHORT).show();
-        }
-    }
 }
