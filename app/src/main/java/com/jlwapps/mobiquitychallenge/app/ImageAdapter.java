@@ -2,6 +2,7 @@ package com.jlwapps.mobiquitychallenge.app;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dropbox.sync.android.DbxAccountManager;
+import com.dropbox.sync.android.DbxException;
+import com.dropbox.sync.android.DbxFile;
+import com.dropbox.sync.android.DbxFileInfo;
+import com.dropbox.sync.android.DbxFileSystem;
+
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 /**
@@ -16,27 +24,25 @@ import java.util.ArrayList;
  */
 public class ImageAdapter extends BaseAdapter {
 
-    private ArrayList<String> imageNames;
-    private ArrayList<Bitmap> images;
+    private ArrayList<DbxFileInfo> pictures;
     private Context mContext;
     private final LayoutInflater mInflater;
 
 
-    public ImageAdapter(Context c, ArrayList<String> imageNames, ArrayList<Bitmap> images) {
-        mContext = c;
-        this.imageNames = imageNames;
-        this.images = images;
-        mInflater = LayoutInflater.from(c);
+    public ImageAdapter(Context context, ArrayList<DbxFileInfo> pictures) {
+        mContext = context;
+        this.pictures = pictures;
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return images.size();
+        return pictures.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return images.get(position);
+        return pictures.get(position);
     }
 
     @Override
@@ -52,22 +58,24 @@ public class ImageAdapter extends BaseAdapter {
         SquareImageView thumbnail = (SquareImageView) convertView.findViewById(R.id.picture);
         TextView title = (TextView) convertView.findViewById(R.id.text);
 
-        thumbnail.setImageBitmap(images.get(position));
-        title.setText(imageNames.get(position));
+        Bitmap bitmap;
+        try {
+            DbxFileSystem fileSystem = DbxFileSystem.forAccount(DbxAccountManager.getInstance(mContext.getApplicationContext(),
+                    DropBoxConstants.APP_KEY, DropBoxConstants.APP_SECRET).getLinkedAccount());
+            DbxFile dropboxThumbnail = fileSystem.openThumbnail(pictures.get(position).path, DbxFileSystem.ThumbSize.M, DbxFileSystem.ThumbFormat.PNG);
+            FileInputStream in = dropboxThumbnail.getReadStream();
+            bitmap = BitmapFactory.decodeStream(in);
+            thumbnail.setImageBitmap(bitmap);
+            in.close();
+            dropboxThumbnail.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        title.setText(pictures.get(position).path.toString());
 
         return convertView;
     }
 
-    public void addImage(String title, Bitmap bitmap)
-    {
-        imageNames.add(title);
-        images.add(bitmap);
-    }
-
-    public void removeImage(int position)
-    {
-        imageNames.remove(position);
-        images.remove(position);
-    }
 
 }

@@ -10,7 +10,6 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,15 +17,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.preference.PreferenceManager;
 
-
-import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.android.AndroidAuthSession;
-import com.dropbox.client2.session.AppKeyPair;
-import com.dropbox.client2.session.Session.AccessType;
+import com.dropbox.sync.android.DbxAccountManager;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerAdapter;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerClickInterface;
 import com.jlwapps.mobiquitychallenge.app.NavigationDrawer.NavDrawerItem;
-import com.jlwapps.mobiquitychallenge.app.asynctasks.DropboxLoadAllTask;
 import com.jlwapps.mobiquitychallenge.app.fragments.BottomActionBarFragment;
 import com.jlwapps.mobiquitychallenge.app.fragments.FavoritesFragment;
 import com.jlwapps.mobiquitychallenge.app.fragments.MyPicsFragment;
@@ -36,16 +30,12 @@ import com.jlwapps.mobiquitychallenge.app.fragments.MyPicsLoginFragment;
 import java.util.ArrayList;
 
 
-public class MainActivity extends Activity implements NavDrawerClickInterface,
-        DropBoxInterface {
+public class MainActivity extends Activity implements NavDrawerClickInterface
+         {
 
-    // region Dropbox Specific Attributes
-    private static final String APP_KEY = "9xwd05d2k716h5b";
-    private static final String APP_SECRET = "mo296utiboc7mrk";
-    private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER;
 
-    private DropboxAPI<AndroidAuthSession> mDBApi;
-    //endregion
+
+    private DbxAccountManager mAccountManager;
 
     // region SharedPreferences Keys
     private static final String PREF_SECRET_KEY = "SECRET_KEY";
@@ -67,7 +57,6 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
     private TypedArray navDrawerIcons;
     private ArrayList<NavDrawerItem> navDrawerItems;
 
-    private DropboxAPI.Entry mDropboxEntries;
 
 
     @Override
@@ -86,8 +75,8 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
         }
 
         //Creating AuthSession for Dropbox API
-        AndroidAuthSession session = buildDropBoxSession();
-        mDBApi = new DropboxAPI<AndroidAuthSession>(session);
+        mAccountManager = DbxAccountManager.getInstance(getApplicationContext(), DropBoxConstants.APP_KEY, DropBoxConstants.APP_SECRET);
+
 
         mCurrentTitle = getTitle().toString();
         mDrawerTitle = mCurrentTitle;
@@ -197,31 +186,12 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
     @Override
     protected void onResume() {
         super.onResume();
-        AndroidAuthSession session = mDBApi.getSession();
 
-        if(session.authenticationSuccessful())
-        {
-            try {
-                session.finishAuthentication();
-                displayFragment(mNavDrawerPosition);
-            } catch (IllegalStateException e)
-            {
-                Log.i("DBAuthLog", "Error authenticating");
-            }
-        }
-
-        //Load Dropbox Items
-        if(session.isLinked())
-        {
-            DropboxLoadAllTask loadAllTask = new DropboxLoadAllTask(getApplicationContext(), this, "/");
-            loadAllTask.execute();
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        storeDropBoxSession(mDBApi.getSession());
     }
 
     @Override
@@ -235,7 +205,7 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
         Fragment theFragment;
         switch (index) {
             case 0:
-                if(!mDBApi.getSession().isLinked())
+                if(!mAccountManager.hasLinkedAccount())
                     theFragment = new MyPicsLoginFragment();
                 else
                     theFragment = new MyPicsFragment();
@@ -257,66 +227,22 @@ public class MainActivity extends Activity implements NavDrawerClickInterface,
         }
     }
 
-    private void syncFragments()
-    {
-        Fragment mainFragment = getFragmentManager().findFragmentById(R.id.main_frame);
-        if(mainFragment != null) {
-            try {
-                ((DropBoxFragmentInterface)mainFragment).dropboxSyncFragment(mDropboxEntries);
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    // region Dropbox Methods
-    private AndroidAuthSession buildDropBoxSession()
-    {
-        AppKeyPair appKeyPair = new AppKeyPair(APP_KEY, APP_SECRET);
-        AndroidAuthSession session = new AndroidAuthSession(appKeyPair);
-        loadDropBoxSession(session);
-        return session;
-    }
-
-    private void loadDropBoxSession(AndroidAuthSession session)
-    {
-        String secret = mSharedPreferences.getString(PREF_SECRET_KEY, null);
-        if(secret != null)
-            session.setOAuth2AccessToken(secret);
-    }
-
-    private void storeDropBoxSession(AndroidAuthSession session)
-    {
-        String oauth_token = session.getOAuth2AccessToken();
-        if(oauth_token != null)
+        switch (requestCode)
         {
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putString(PREF_SECRET_KEY, oauth_token);
-            editor.commit();
+            case DropBoxConstants.REQUEST_LINK_TO_DBX:
+                if(resultCode == RESULT_OK)
+                {
+                    displayFragment(mNavDrawerPosition);
+                }
+                break;
+
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    @Override
-    public DropboxAPI<AndroidAuthSession> getDropboxAPI() {
-        return mDBApi;
-    }
 
-    @Override
-    public void dropboxSync(DropboxAPI.Entry entries)
-    {
-        mDropboxEntries = entries;
-        syncFragments();
-    }
-
-    @Override
-    public DropboxAPI.Entry getEntries() {
-        return mDropboxEntries;
-    }
-
-    // endregion
 }

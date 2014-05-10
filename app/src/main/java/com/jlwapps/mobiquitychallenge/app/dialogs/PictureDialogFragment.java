@@ -18,8 +18,8 @@ import android.widget.Toast;
 import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
 import com.jlwapps.mobiquitychallenge.app.PictureUtils;
 import com.jlwapps.mobiquitychallenge.app.R;
-import com.jlwapps.mobiquitychallenge.app.asynctasks.DropboxUploadTask;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -70,6 +70,7 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         mThumbnailView = (ImageView) rootView.findViewById(R.id.thumbnail);
         mDropBoxButton = (Button) rootView.findViewById(R.id.btn_dropbox_save);
         mLocalButton = (Button) rootView.findViewById(R.id.btn_local_save);
+        mLocalButton.setVisibility(View.GONE);
         mCancelButton = (Button) rootView.findViewById(R.id.btn_cancel);
         mCreationDate = (TextView) rootView.findViewById(R.id.creationDate);
 
@@ -94,10 +95,8 @@ public class PictureDialogFragment extends DialogFragment implements PictureUtil
         mDropBoxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<Uri, String> filesToUpload = new HashMap<Uri, String>();
-                filesToUpload.put(mPictureLocation, mTitleView.getText().toString() + ".png");
-                DropboxUploadTask uploadTask = new DropboxUploadTask(getActivity(), null, filesToUpload, ((DropBoxInterface)getActivity()).getDropboxAPI());
-                uploadTask.execute();
+                String title = mTitleView.getText().toString() + ".png";
+                PictureUtils.savePictureToDropbox(getActivity().getApplicationContext(), new File(mPictureLocation.getPath()), title);
                 dismiss();
             }
         });

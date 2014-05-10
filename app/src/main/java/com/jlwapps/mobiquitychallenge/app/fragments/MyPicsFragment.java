@@ -1,9 +1,9 @@
 package com.jlwapps.mobiquitychallenge.app.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,36 +11,33 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dropbox.client2.DropboxAPI;
-import com.jlwapps.mobiquitychallenge.app.DropBoxFragmentInterface;
-import com.jlwapps.mobiquitychallenge.app.DropBoxInterface;
+import com.dropbox.sync.android.DbxAccountManager;
+import com.dropbox.sync.android.DbxException;
+import com.dropbox.sync.android.DbxFile;
+import com.dropbox.sync.android.DbxFileInfo;
+import com.dropbox.sync.android.DbxFileSystem;
+import com.dropbox.sync.android.DbxPath;
+import com.jlwapps.mobiquitychallenge.app.DropBoxConstants;
 import com.jlwapps.mobiquitychallenge.app.ImageAdapter;
 import com.jlwapps.mobiquitychallenge.app.R;
-import com.jlwapps.mobiquitychallenge.app.asynctasks.DropboxLoadThumbnailTask;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Created by jlw8k_000 on 5/9/2014.
  */
-public class MyPicsFragment extends Fragment implements DropboxLoadThumbnailTask.DropboxLoadThumbnailInterface,
-        DropBoxFragmentInterface{
+public class MyPicsFragment extends Fragment {
 
-    private DropBoxInterface mDBI;
     private GridView mPictureGrid;
     private ImageView mNoPicturesImage;
     private TextView mNoPicturesText;
+    private DbxAccountManager manager;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mDBI = (DropBoxInterface) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "must implement DropboxInterface");
-        }
-    }
+    private DbxFileSystem mFileSystem;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,11 +46,40 @@ public class MyPicsFragment extends Fragment implements DropboxLoadThumbnailTask
         mNoPicturesImage = (ImageView) rootView.findViewById(R.id.img_no_pictures);
         mNoPicturesText = (TextView) rootView.findViewById(R.id.lbl_no_pictures);
 
-        mPictureGrid.setAdapter(new ImageAdapter(getActivity(), new ArrayList<String>(), new ArrayList<Bitmap>()));
-        dropboxSyncFragment(mDBI.getEntries());
+        manager = DbxAccountManager.getInstance(getActivity().getApplicationContext(),
+                DropBoxConstants.APP_KEY, DropBoxConstants.APP_SECRET);
 
-        setGridVisibility(mPictureGrid.getAdapter().getCount()<= 0);
-        return rootView;
+
+         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            mFileSystem = DbxFileSystem.forAccount(manager.getLinkedAccount());
+            List<DbxFileInfo> infos = mFileSystem.listFolder(DbxPath.ROOT);
+            loadPictures(infos);
+            Log.i("PyPicsFragment", infos.toString());
+            mFileSystem.addPathListener(new DbxFileSystem.PathListener() {
+                @Override
+                public void onPathChange(DbxFileSystem dbxFileSystem, DbxPath dbxPath, Mode mode) {
+                    try {
+                        List<DbxFileInfo> infos = mFileSystem.listFolder(DbxPath.ROOT);
+                        loadPictures(infos);
+                    }catch (Exception e){ e.printStackTrace();}
+                }}, DbxPath.ROOT, DbxFileSystem.PathListener.Mode.PATH_OR_CHILD);
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     private void setGridVisibility(boolean isEmpty)
@@ -69,20 +95,15 @@ public class MyPicsFragment extends Fragment implements DropboxLoadThumbnailTask
         }
     }
 
-    @Override
-    public void thumbnailLoaded(String filename, Bitmap thumbnail) {
-        ((ImageAdapter)mPictureGrid.getAdapter()).addImage(filename, thumbnail);
+    private void loadPictures(List<DbxFileInfo> pictures)
+    {
+        mPictureGrid.setAdapter(new ImageAdapter(getActivity(), (ArrayList<DbxFileInfo>) pictures));
+        setGridVisibility(mPictureGrid.getAdapter().isEmpty());
         mPictureGrid.invalidateViews();
-        setGridVisibility(mPictureGrid.getAdapter().getCount()<= 0);
-
     }
 
-    @Override
-    public void dropboxSyncFragment(DropboxAPI.Entry entries) {
-        if(entries != null) {
-            for (DropboxAPI.Entry entry : mDBI.getEntries().contents) {
-                new DropboxLoadThumbnailTask(getActivity(), mDBI, this, entry).execute();
-            }
-        }
-    }
+
+
+
+
 }
